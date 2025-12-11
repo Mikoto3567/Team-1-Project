@@ -1,18 +1,108 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Picker</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .card {
+        background: white;
+        padding: 30px;
+        width: 350px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+
+      h2 {
+        margin-top: 0;
+        font-size: 26px;
+        color: #333;
+      }
+
+      #colorPicker {
+        width: 100%;
+        height: 60px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin: 15px 0;
+      }
+
+      #hexInput {
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+        border-radius: 10px;
+        border: 2px solid #ccc;
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      #preview {
+        width: 100%;
+        height: 120px;
+        border-radius: 10px;
+        margin-top: 20px;
+        border: 2px solid #ccc;
+      }
+    </style>
+  </head>
+
   <body>
-    <h3>Select a Color:</h3>
+    <div class="card">
+      <h2>Color Picker</h2>
 
-    <input type="color" id="colorPicker" />
+      <!-- Color Picker -->
+      <input type="color" id="colorPicker" value="#4e54c8" />
 
-    <p id="output">Chosen color: none</p>
+      <!-- User types their own color -->
+      <input type="text" id="hexInput" value="#4e54c8" maxlength="7" />
+
+      <!-- Preview box -->
+      <div id="preview"></div>
+    </div>
 
     <script>
       const picker = document.getElementById("colorPicker");
-      const output = document.getElementById("output");
+      const hexInput = document.getElementById("hexInput");
+      const preview = document.getElementById("preview");
 
-      picker.addEventListener("input", function () {
-        output.textContent = "Chosen color: " + picker.value;
+      // Set initial preview
+      preview.style.background = picker.value;
+
+      // When user picks a color with the color input
+      picker.addEventListener("input", () => {
+        const color = picker.value;
+        hexInput.value = color;
+        preview.style.background = color;
+      });
+
+      // When user types a hex color manually
+      hexInput.addEventListener("input", () => {
+        let val = hexInput.value;
+
+        // Auto-add # if missing
+        if (!val.startsWith("#")) {
+          val = "#" + val;
+        }
+
+        // Only update if valid hex code
+        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+          picker.value = val;
+          preview.style.background = val;
+        }
       });
     </script>
   </body>
