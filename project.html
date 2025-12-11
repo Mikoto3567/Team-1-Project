@@ -1,5 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
-  <title>Color picker</title>
-  <head> </head>
+<html>
+  <body>
+    <h3>Select a Color:</h3>
+
+    <input type="color" id="colorPicker" />
+
+    <p id="output">Chosen color: none</p>
+
+    <script>
+      const picker = document.getElementById("colorPicker");
+      const output = document.getElementById("output");
+
+      picker.addEventListener("input", function () {
+        output.textContent = "Chosen color: " + picker.value;
+      });
+    </script>
+  </body>
 </html>
