@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Converter</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .card {
+        background: white;
+        padding: 30px;
+        width: 380px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+
+      h2 {
+        margin-top: 0;
+        font-size: 26px;
+        color: #333;
+      }
+
+      input[type="color"] {
+        width: 100%;
+        height: 60px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin: 15px 0;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+        border-radius: 10px;
+        border: 2px solid #ccc;
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      #preview {
+        width: 100%;
+        height: 120px;
+        border-radius: 10px;
+        margin-top: 20px;
+        border: 2px solid #ccc;
+      }
+
+      .valueBox {
+        background: #f7f7f7;
+        padding: 12px;
+        border-radius: 10px;
+        margin-top: 15px;
+        font-size: 18px;
+        border: 1px solid #ddd;
+      }
+
+      button {
+        margin-top: 15px;
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: #4e54c8;
+        color: white;
+        transition: 0.2s;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card">
+      <h2>Color Converter</h2>
+
+      <!-- Color Picker -->
+      <input type="color" id="colorPicker" value="#4e54c8" />
+
+      <!-- HEX Input -->
+      <input type="text" id="hexInput" value="#4e54c8" maxlength="7" />
+
+      <!-- Preview -->
+      <div id="preview"></div>
+
+      <!-- RGB Output -->
+      <div class="valueBox" id="rgbBox">RGB:</div>
+
+      <!-- HSL Output -->
+      <div class="valueBox" id="hslBox">HSL:</div>
+
+      <!-- Copy HEX -->
+      <button id="copyBtn">Copy HEX Code</button>
+    </div>
+
+    <script>
+      const picker = document.getElementById("colorPicker");
+      const hexInput = document.getElementById("hexInput");
+      const preview = document.getElementById("preview");
+      const rgbBox = document.getElementById("rgbBox");
+      const hslBox = document.getElementById("hslBox");
+      const copyBtn = document.getElementById("copyBtn");
+
+      function hexToRgb(hex) {
+        hex = hex.replace("#", "");
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        return { r, g, b };
+      }
+
+      function rgbToHsl(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let h,
+          s,
+          l = (max + min) / 2;
+
+        if (max === min) {
+          h = s = 0;
+        } else {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+          switch (max) {
+            case r:
+              h = (g - b) / d + (g < b ? 6 : 0);
+              break;
+            case g:
+              h = (b - r) / d + 2;
+              break;
+            case b:
+              h = (r - g) / d + 4;
+              break;
+          }
+
+          h *= 60;
+        }
+
+        return {
+          h: Math.round(h),
+          s: Math.round(s * 100),
+          l: Math.round(l * 100),
+        };
+      }
+
+      function updateValues(hex) {
+        preview.style.background = hex;
+
+        const rgb = hexToRgb(hex);
+        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+        rgbBox.textContent = `RGB: ${rgb.r}, ${rgb.g}, ${rgb.b}`;
+        hslBox.textContent = `HSL: ${hsl.h}°, ${hsl.s}%, ${hsl.l}%`;
+      }
+
+      picker.addEventListener("input", () => {
+        const color = picker.value;
+        hexInput.value = color;
+        updateValues(color);
+      });
+
+      hexInput.addEventListener("input", () => {
+        let val = hexInput.value;
+
+        if (!val.startsWith("#")) val = "#" + val;
+
+        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+          picker.value = val;
+          updateValues(val);
+        }
+      });
+
+      // Copy HEX to clipboard
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(hexInput.value).then(() => {
+          copyBtn.textContent = "Copied!";
+          setTimeout(() => (copyBtn.textContent = "Copy HEX Code"), 1500);
+        });
+      });
+      function updateValues(hex) {
+  preview.style.background = hex;
+
+  // 👉 BODY background солих
+  document.body.style.background = hex;
+
+  const rgb = hexToRgb(hex);
+  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+  rgbBox.textContent = `RGB: ${rgb.r}, ${rgb.g}, ${rgb.b}`;
+  hslBox.textContent = `HSL: ${hsl.h}°, ${hsl.s}%, ${hsl.l}%`;
+}
+
+
+      // Initialize on load
+      updateValues(hexInput.value);
+    </script>
+  </body>
+</html>
