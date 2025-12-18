@@ -48,8 +48,9 @@ body {
   left: -150px;        
   width: 140px;
   animation: moveX 6s linear infinite;
-  transform: skewX(155deg);
+  transform: skew(-120deg);
 }
+
 @keyframes moveX {
   from {
     transform: translateX(110vw);
